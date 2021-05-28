@@ -1,0 +1,1 @@
+worker: python isolated_margin_socket.py
