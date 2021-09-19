@@ -45,7 +45,7 @@ def base(symbol_: str) -> str:
 
 
 def target(symbol_: str, length: int):
-    c = symbol_[:length]
+    c = symbol_[:-length]
     return c
 
 
