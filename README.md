@@ -20,6 +20,7 @@
 ```diff
 - when new commit/update happens, you need to create new heroku app using Deploy to heroku button,
 - So that you can use the new feature.
+- OCO not supported
 ```
 ------------
 <h2>Setup before Deploy to Heroku</h2>
@@ -77,6 +78,13 @@ TELEGRAM_CHAT_ID="your telegram chat id"
 
 Give a ⭐️ if this project helped you!
 
+## Donate
+If this library helped you out feel free to donate.
+
+- BTC: bc1qqewkmv335jdrt0jz6rn9sdm4jltd60qfw24fr9
+- ETH: 0xE7212AAD5A8cE7eb02eF9Bee05332A679811dAf1
+- NEO: AUp6giUAxQ3Y3RY8bUCuHrTa7HU25Ltuh4
+- BNB: bnb1h6gylq3xgrxmw7t8k2r8e0xn7rquefeqjfcanx
 ## 📝 License
 
 Copyright © 2021 [@PiyushDixit96](https://github.com/PiyushDixit96).<br />
