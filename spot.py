@@ -56,7 +56,7 @@ def process_message(json_data):
         event_type = json_data['e']
         if event_type == 'executionReport':
             symbol = json_data['s']
-            price = json_data['p']
+            price = fix_float(json_data['p'])
             quantity = fix_float(json_data['q'])
             side = json_data['S']
             order_id = json_data['i']
@@ -64,42 +64,49 @@ def process_message(json_data):
             last_trade_quantity = fix_float(json_data['l'])
             filled_qty = fix_float(json_data['z'])
             order_type = json_data['o']
-            lprice = json_data['L']
+            last_price = fix_float(json_data['L'])
             bc = base(symbol)
             tc = target(symbol, len(bc))
 
             if order_type == "MARKET":
-                fprice = lprice
+                final_price = last_price
             else:
-                fprice = price
+                final_price = price
 
             if order_status == 'NEW':
-                txt = f"<b>Spot {side} {order_type} Order CREATED\n" \
-                      f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
-                      f"Quantity - {quantity} {tc}\n" \
-                      f"Order ID - #ID{order_id}</b>"
+                txt = (f"✅ <b>Spot {side} {order_type} Order CREATED\n"
+                       f"Symbol:  {symbol}\n"
+                       f"Price:  {final_price} {bc}\n"
+                       f"Quantity:  {quantity} {tc}\n"
+                       f"OrderID:  {order_id}</b>")
 
             elif order_status == 'CANCELED':
-                txt = f"<b>Spot {side} {order_type} Order CANCELED\n" \
-                      f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
-                      f"Quantity - {quantity} {tc}\n" \
-                      f"Order ID - #ID{order_id}</b>"
+                txt = (f"❎ <b>Spot {side} {order_type} Order CANCELED\n"
+                       f"Symbol:  {symbol}\n"
+                       f"Price:  {final_price} {bc}\n"
+                       f"Quantity:  {quantity} {tc}\n"
+                       f"OrderID:  {order_id}</b>")
 
             elif order_status == 'PARTIALLY_FILLED':
-                txt = f"<b>Spot {side} {order_type} Order PARTIALLY FILLED\n" \
-                      f"Symbol - {symbol}\nPrice - {lprice} {bc}\nLast Filled - {last_trade_quantity} {tc}\n" \
-                      f"Total Qty - {quantity} {tc}\nTotal Filled - {filled_qty} {tc}\nTotal Remains - " \
-                      f"{float(quantity) - float(filled_qty)} {tc}\nOrder ID - #ID{order_id}</b>"
+                txt = (f"⌛️ <b>Spot {side} {order_type} Order PARTIALLY FILLED\n"
+                       f"Symbol:  {symbol}\n"
+                       f"Price:  {last_price} {bc}\n"
+                       f"Last Filled:  {last_trade_quantity} {tc}\n"
+                       f"Total Filled:  {filled_qty} {tc}\n"
+                       f"Remaining:  {float(quantity) - float(filled_qty)} {tc}\n"
+                       f"OrderID:  {order_id}</b>")
 
             elif order_status == 'FILLED':
-                txt = f"<b>Spot {side} {order_type} Order FULLY FILLED\n" \
-                      f"Symbol - {symbol}\nAvg. Price - {fix_float(float(json_data['Z']) / float(json_data['z']))} {bc}\n" \
-                      f"Filled - {filled_qty} {tc}\nOrder ID - #ID{order_id}</b>"
+                txt = (f"💰 <b>Spot {side} {order_type} Order FULLY FILLED\n"
+                       f"Symbol:  {symbol}\n"
+                       f"Average Price:  {fix_float(float(json_data['Z']) / float(json_data['z']))} {bc}\n"
+                       f"Filled:  {filled_qty} {tc}\n"
+                       f"OrderID:  {order_id}</b>")
             else:
                 txt = f"<b>Spot {side} {order_type} Order {order_status}\n" \
-                      f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
-                      f"Quantity - {quantity} {tc}\n" \
-                      f"Order ID - #ID{order_id}</b>"
+                      f"Symbol:  {symbol}\nPrice:  {final_price} {bc}\n" \
+                      f"Quantity:  {quantity} {tc}\n" \
+                      f"OrderID:  {order_id}</b>"
             send_telegram(txt)
 
     except Exception as E:
