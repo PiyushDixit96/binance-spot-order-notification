@@ -5,7 +5,9 @@ import re
 
 import requests
 from binance import AsyncClient, BinanceSocketManager
+from dotenv import load_dotenv
 
+load_dotenv()  # take environment variables from .env file
 api_key = os.getenv("BINANCE_API_KEY")
 api_secret = os.getenv("BINANCE_SECRET_KEY")
 token = os.getenv("TELEGRAM_TOKEN")
@@ -66,20 +68,22 @@ def process_message(json_data):
             bc = base(symbol)
             tc = target(symbol, len(bc))
 
-            if order_type == "MARKET":fprice=lprice
-            else:fprice=price
+            if order_type == "MARKET":
+                fprice = lprice
+            else:
+                fprice = price
 
             if order_status == 'NEW':
                 txt = f"<b>Spot {side} {order_type} Order CREATED\n" \
-                        f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
-                        f"Quantity - {quantity} {tc}\n" \
-                        f"Order ID - #ID{order_id}</b>"
+                      f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
+                      f"Quantity - {quantity} {tc}\n" \
+                      f"Order ID - #ID{order_id}</b>"
 
             elif order_status == 'CANCELED':
                 txt = f"<b>Spot {side} {order_type} Order CANCELED\n" \
-                        f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
-                        f"Quantity - {quantity} {tc}\n" \
-                        f"Order ID - #ID{order_id}</b>"
+                      f"Symbol - {symbol}\nPrice - {fprice} {bc}\n" \
+                      f"Quantity - {quantity} {tc}\n" \
+                      f"Order ID - #ID{order_id}</b>"
 
             elif order_status == 'PARTIALLY_FILLED':
                 txt = f"<b>Spot {side} {order_type} Order PARTIALLY FILLED\n" \
@@ -99,14 +103,13 @@ def process_message(json_data):
             send_telegram(txt)
 
     except Exception as E:
-        ee = str(
-            f"In spot, Exception found on processed message: {str(E)}")
+        ee = str(f"In spot, Exception found on processed message: {str(E)}")
         print(ee)
         send_telegram(ee)
 
 
 async def spot_user(client):
-    bm = BinanceSocketManager(client, user_timeout=1700)  
+    bm = BinanceSocketManager(client, user_timeout=1700)
     t = f"Binance Starts a web socket Manager for spot.."
     print(t)
     send_telegram(t)
